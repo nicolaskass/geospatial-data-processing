@@ -192,5 +192,8 @@ order. I build operational and analytical systems for small businesses at
 
 Client identifiers, site data and manuscript text are omitted throughout.
 
+**Licence:** the writing in this repository is published under
+[CC BY 4.0](LICENSE) — reuse it, quote it, build on it, with attribution.
+
 *Every figure above is a real measurement taken from the project — scripts and lines
 counted from the source tree, chapters and words counted from the manuscript.*
