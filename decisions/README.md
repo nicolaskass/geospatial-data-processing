@@ -31,3 +31,4 @@ Dates are when the decision landed in the repository, taken from git history.
 | [008](ADR-008-two-uncertainty-bounds-not-one.md) | Report two uncertainty bounds, not one | 2026-09 | Accepted |
 | [009](ADR-009-verify-the-vertical-datum.md) | Verify the vertical datum separately | 2026-09 | Accepted |
 | [010](ADR-010-verify-the-citations.md) | Verify the citations | 2026-09 | Accepted |
+| [011](ADR-011-every-layer-declares-its-provenance.md) | Every layer declares its provenance | 2026-05 | Accepted |

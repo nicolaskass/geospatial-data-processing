@@ -168,6 +168,71 @@ existing GIS and CAD tools already open.
 
 ---
 
+## Satellite data engineering
+
+A second pipeline, different in kind from the drone work: instead of producing terrain
+models from a flight, it assembles a multi-source environmental raster stack over a
+region and extracts per-feature profiles from it. Built for a habitat-suitability study
+covering a Patagonian plateau.
+
+```mermaid
+graph TB
+    gee["Google Earth Engine<br/><i>authenticated pipeline</i>"]
+    wcs["ISRIC SoilGrids<br/><i>WCS</i>"]
+
+    subgraph stack["Raster stack — 38 layers"]
+        gsw["JRC Global Surface Water<br/><i>occurrence · recurrence · transition</i>"]
+        clim["WorldClim BIO<br/><i>19 bioclimatic variables</i>"]
+        soil["SoilGrids 2.0<br/><i>12 soil properties</i>"]
+        modis["MODIS vegetation indices<br/><i>reduced over 6 years</i>"]
+        srtm["SRTM elevation<br/><i>+ derived slope, aspect</i>"]
+    end
+
+    inv["<b>Feature inventory</b><br/>raster → vector"]
+    prof["<b>Zonal extraction</b><br/>5,427 features × 38 layers"]
+    qc["QC gate<br/><i>numbered, named checks</i>"]
+
+    gee --> gsw & clim & modis & srtm
+    wcs --> soil
+    gsw --> inv
+    stack --> prof
+    inv --> prof --> qc
+
+    style qc fill:#fff8e1,stroke:#c99a06
+```
+
+**The inventory step is raster-to-vector at scale.** A surface-water layer is binarised at
+several thresholds, connected components are labelled, small artefacts are filtered by
+minimum area, the result is vectorised to polygons, reprojected to a metric CRS for
+measurement, and matched against known locations. Five thousand four hundred and
+twenty-seven distinct water bodies come out of a satellite image.
+
+**Extraction is zonal, buffered, and QC-gated.** Each feature gets a buffer, derived
+terrain variables are computed, and every layer is summarised within each polygon. The
+output is a feature-by-variable matrix — and a QC report of numbered checks that must pass
+before the matrix is used.
+
+Three practices carry over from the drone pipeline, and one is new:
+
+**A fail-fast pre-check before the expensive step.** Before processing an entire region,
+the pipeline verifies that the signal is present at a location known to have it. If the
+reference site does not show water in the water layer, something is wrong with the
+extraction and there is no point spending an hour discovering that at the end.
+
+**Named, numbered QC checks with recorded values.** Not a boolean pass. Each check states
+what it tested and what it found — missing-value rate per variable, completeness at the
+reference site, whether elevation falls in a plausible range for the region — and the
+record is written to disk as evidence.
+
+**Thresholds are parameters, not constants.** The binarisation thresholds are command-line
+arguments with documented defaults, because the right threshold is a judgement about the
+region and belongs to the operator.
+
+**Every layer declares its provenance** — the new one, and the most valuable. See
+[ADR-011](decisions/ADR-011-every-layer-declares-its-provenance.md).
+
+---
+
 ## Automation
 
 Processing is driven through OpenDroneMap's REST API rather than its web interface:

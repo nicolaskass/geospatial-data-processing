@@ -50,6 +50,7 @@ Measured from the repository.
 | Reference book | 67 chapters across 7 parts, ~85,800 words |
 | Domains covered | photogrammetry, LiDAR, GNSS/RTK-PPK, GIS, automation |
 | Core stack | PDAL · GDAL · rasterio · NumPy · OpenDroneMap · Quarto |
+| Satellite stack | 38 layers from 5 sources · 5,427 features profiled by zonal extraction |
 | Case studies | road works, stockpiles, quarries, agriculture, conservation, wetlands |
 | Outputs | DTM/DSM/DEM, orthomosaics, contours, profiles, volumes, reports |
 
@@ -118,6 +119,17 @@ OpenDroneMap's REST API rather than its interface, which is what makes a repeata
 unattended, batchable pipeline possible at all.
 → [ADR-004](decisions/ADR-004-compose-the-open-geospatial-stack.md) ·
 [ADR-007](decisions/ADR-007-automate-through-the-api.md)
+
+**Two pipelines, one discipline: drones and satellites.**
+Alongside the drone work there is a remote-sensing pipeline that assembles 38 raster layers
+from five sources — Google Earth Engine for surface water, climate, vegetation and
+elevation, a web coverage service for soils — turns a surface-water layer into a vector
+inventory of 5,427 water bodies via thresholding and connected components, and extracts a
+feature-by-variable profile matrix by zonal statistics. Every layer is recorded in a
+generated manifest with its version, band and *native* resolution, because a result
+computed from version 1.4 is not reproducible from version 1.3.
+→ [ADR-011](decisions/ADR-011-every-layer-declares-its-provenance.md) ·
+[ARCHITECTURE.md](ARCHITECTURE.md#satellite-data-engineering)
 
 **Written for a specific reader who does not exist in the literature.**
 The book spans photogrammetric theory, hardware selection, workstation specification,
