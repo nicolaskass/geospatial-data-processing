@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 320" width="1280" height="320" xmlns="http://www.w3.org/2000/svg">
+  <!-- Geospatial Data Processing — repository banner -->
+  <!-- T3 lockup over the brand constellation motif. -->
+  <!-- Follows negocio/marca/manual §6: dispersed nodes in clusters, plenty of air,
+       no tiling, per-edge opacity inversely proportional to edge length, no animation. -->
+
+  <defs>
+    <!-- Brand dark surfaces: bg-primary #0a0a0f, bg-secondary #111118 -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   style="stop-color:#0A0A0F"/>
+      <stop offset="48%"  style="stop-color:#111118"/>
+      <stop offset="100%" style="stop-color:#0B0B11"/>
+    </linearGradient>
+
+    <radialGradient id="glow" cx="15%" cy="48%" r="52%">
+      <stop offset="0%"   style="stop-color:#00D4FF;stop-opacity:0.10"/>
+      <stop offset="100%" style="stop-color:#00D4FF;stop-opacity:0"/>
+    </radialGradient>
+
+    <!-- Cube in the brand accent family: cyan #00d4ff, per the 2026-09-07
+         colour decision in the brand manual. Faces are tints and shades of it. -->
+    <linearGradient id="topFace" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%"   style="stop-color:#E4F8FF"/>
+      <stop offset="100%" style="stop-color:#BFEDFC"/>
+    </linearGradient>
+    <linearGradient id="leftFace" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%"   style="stop-color:#6FD6F2"/>
+      <stop offset="100%" style="stop-color:#45C2E6"/>
+    </linearGradient>
+    <linearGradient id="rightFace" x1="100%" y1="50%" x2="0%" y2="50%">
+      <stop offset="0%"   style="stop-color:#1497C4"/>
+      <stop offset="100%" style="stop-color:#0B7099"/>
+    </linearGradient>
+
+    <linearGradient id="rule" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   style="stop-color:#00D4FF;stop-opacity:0.85"/>
+      <stop offset="100%" style="stop-color:#00D4FF;stop-opacity:0"/>
+    </linearGradient>
+
+    <!-- Keeps the constellation from competing with the type -->
+    <linearGradient id="scrim" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   style="stop-color:#0A0A0F;stop-opacity:0.95"/>
+      <stop offset="40%"  style="stop-color:#0A0A0F;stop-opacity:0.90"/>
+      <stop offset="64%"  style="stop-color:#0D0D14;stop-opacity:0.34"/>
+      <stop offset="100%" style="stop-color:#111118;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="320" fill="url(#bg)"/>
+
+  <!-- ══ CONSTELLATION ════════════════════════════════════════════ -->
+  <!-- Four loose clusters, irregular spacing, no repeating period.
+       Edge opacity by length: short edges read strongest. -->
+  <g stroke="#00D4FF" fill="none" stroke-linecap="round">
+
+    <!-- short edges within clusters — strongest -->
+    <g stroke-opacity="0.34" stroke-width="1.15">
+      <path d="M 712,104 L 690,132"/>
+      <path d="M 742,58  L 764,96"/>
+      <path d="M 916,246 L 952,262"/>
+      <path d="M 1136,118 L 1114,148"/>
+      <path d="M 1198,238 L 1236,268"/>
+      <path d="M 1198,238 L 1176,282"/>
+    </g>
+
+    <!-- medium edges — cluster spines -->
+    <g stroke-opacity="0.22" stroke-width="1.1">
+      <path d="M 668,72  L 712,104"/>
+      <path d="M 712,104 L 764,96"/>
+      <path d="M 742,58  L 668,72"/>
+      <path d="M 872,214 L 916,246"/>
+      <path d="M 916,246 L 944,206"/>
+      <path d="M 872,214 L 886,266"/>
+      <path d="M 944,206 L 952,262"/>
+      <path d="M 1092,88 L 1136,118"/>
+      <path d="M 1136,118 L 1186,132"/>
+      <path d="M 1168,76 L 1186,132"/>
+      <path d="M 1092,88 L 1168,76"/>
+    </g>
+
+    <!-- long edges — faint, they only suggest structure -->
+    <g stroke-opacity="0.13" stroke-width="1">
+      <path d="M 764,96  L 818,158"/>
+      <path d="M 818,158 L 872,214"/>
+      <path d="M 944,206 L 1016,180"/>
+      <path d="M 1016,180 L 1092,88"/>
+      <path d="M 1114,148 L 1198,238"/>
+      <path d="M 886,266 L 790,268"/>
+      <path d="M 1186,132 L 1246,180"/>
+      <path d="M 860,44  L 742,58"/>
+      <path d="M 952,262 L 1060,286"/>
+    </g>
+
+    <!-- bridges across the field — barely there -->
+    <g stroke-opacity="0.07" stroke-width="1">
+      <path d="M 598,182 L 690,132"/>
+      <path d="M 860,44  L 960,120"/>
+      <path d="M 960,120 L 1092,88"/>
+      <path d="M 1060,286 L 1176,282"/>
+      <path d="M 1246,180 L 1236,268"/>
+    </g>
+  </g>
+
+  <g fill="#00D4FF">
+    <!-- cluster cores -->
+    <g fill-opacity="0.52">
+      <circle cx="712"  cy="104" r="4.6"/>
+      <circle cx="916"  cy="246" r="4.6"/>
+      <circle cx="1136" cy="118" r="4.8"/>
+      <circle cx="1198" cy="238" r="4.2"/>
+    </g>
+    <!-- cluster members -->
+    <g fill-opacity="0.34">
+      <circle cx="668"  cy="72"  r="3.2"/>
+      <circle cx="742"  cy="58"  r="2.8"/>
+      <circle cx="690"  cy="132" r="3.4"/>
+      <circle cx="764"  cy="96"  r="3"/>
+      <circle cx="872"  cy="214" r="3.4"/>
+      <circle cx="944"  cy="206" r="3"/>
+      <circle cx="886"  cy="266" r="2.8"/>
+      <circle cx="952"  cy="262" r="3.2"/>
+      <circle cx="1092" cy="88"  r="3.4"/>
+      <circle cx="1168" cy="76"  r="2.8"/>
+      <circle cx="1114" cy="148" r="3"/>
+      <circle cx="1186" cy="132" r="3.2"/>
+      <circle cx="1236" cy="268" r="2.8"/>
+      <circle cx="1176" cy="282" r="3"/>
+    </g>
+    <!-- scattered singles, the air between clusters -->
+    <g fill-opacity="0.20">
+      <circle cx="818"  cy="158" r="2.4"/>
+      <circle cx="1016" cy="180" r="2.6"/>
+      <circle cx="960"  cy="120" r="2.2"/>
+      <circle cx="860"  cy="44"  r="2.4"/>
+      <circle cx="1246" cy="180" r="2.2"/>
+      <circle cx="1060" cy="286" r="2.4"/>
+      <circle cx="790"  cy="268" r="2.2"/>
+      <circle cx="598"  cy="182" r="2.6"/>
+      <circle cx="1040" cy="52"  r="2"/>
+      <circle cx="640"  cy="248" r="2"/>
+    </g>
+  </g>
+
+  <rect width="1280" height="320" fill="url(#scrim)"/>
+  <rect width="1280" height="320" fill="url(#glow)"/>
+
+  <!-- ══ T3 LOCKUP ════════════════════════════════════════════════ -->
+  <g transform="translate(84,72) scale(0.52)">
+    <polygon points="140,30 220,80 140,130 60,80"
+             fill="url(#topFace)" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round"/>
+    <polygon points="60,80 60,190 140,240 140,130"
+             fill="url(#leftFace)" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round"/>
+    <polygon points="140,130 140,240 220,190 220,80"
+             fill="url(#rightFace)" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round"/>
+  </g>
+
+  <g font-family="Montserrat, 'Helvetica Neue', Helvetica, Arial, sans-serif"
+     text-anchor="middle">
+    <text x="157" y="234" font-size="15" font-weight="700" fill="#EAEAEF"
+          letter-spacing="2.2">NICOLÁS KASS</text>
+    <text x="157" y="256" font-size="9.5" font-weight="600" fill="#5F7A88"
+          letter-spacing="2.4">SOFTWARE ARCHITECT</text>
+  </g>
+
+  <!-- ══ TEXT ═════════════════════════════════════════════════════ -->
+  <g font-family="Montserrat, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+    <text x="266" y="140" font-size="41" font-weight="800" fill="#EAEAEF"
+          letter-spacing="-0.5">Geospatial Data Processing</text>
+
+    <text x="268" y="182" font-size="23" font-weight="600" fill="#00D4FF"
+          letter-spacing="0.6">Methodology &amp; Decision Record</text>
+
+    <rect x="268" y="206" width="188" height="2" fill="url(#rule)"/>
+
+    <text x="268" y="243" font-size="16.5" font-weight="500" fill="#9090A8"
+          letter-spacing="0.3">LiDAR · Photogrammetry · PDAL · GDAL · Python</text>
+
+    <text x="268" y="270" font-size="15" font-weight="400" fill="#606078"
+          letter-spacing="0.3">12 scripts · 67 chapters · validation that is not circular</text>
+  </g>
+</svg>
