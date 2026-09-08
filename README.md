@@ -198,7 +198,7 @@ confidently wrong one becomes a number in somebody's invoice.
 
 ## Author
 
-Nicolás Kass — biologist, ISO 9001 consultant, and software architect, in that historical
+Nicolas Kass — biologist, ISO 9001 consultant, and software architect, in that historical
 order. I build operational and analytical systems for small businesses at
 [T³](https://t3.com.ar).
 
