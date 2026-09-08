@@ -46,7 +46,7 @@ Measured from the repository.
 
 | | |
 |---|---|
-| Processing & QC scripts | 12, ~1,070 LOC Python |
+| Processing & QC scripts | 17, ~1,680 LOC Python |
 | Reference book | 67 chapters across 7 parts, ~85,800 words |
 | Domains covered | photogrammetry, LiDAR, GNSS/RTK-PPK, GIS, automation |
 | Core stack | PDAL · GDAL · rasterio · NumPy · OpenDroneMap · Quarto |
@@ -73,19 +73,25 @@ is the single most common methodological error in commercial drone survey work, 
 reliably produces impressively small numbers that mean nothing.
 → [ADR-001](decisions/ADR-001-validation-with-independent-check-points.md)
 
-**Uncertainty travels with the number.**
-Volume calculation takes the DTM's real vertical RMSE and propagates it into the result,
-so the deliverable is a volume *and its uncertainty*. The docstring instructs the user to
-pass the RMSE actually measured, never an assumed value. A volume without an error bar is
-a claim disguised as a measurement.
-→ [ADR-002](decisions/ADR-002-uncertainty-travels-with-the-number.md)
+**Uncertainty travels with the number — as two bounds, never one.**
+DTM error is spatially correlated: doming, a bad control point or a wrong vertical datum
+displace whole regions the same way, and correlated error does not cancel when summed. So
+the volume is reported with an optimistic bound (independent error) *and* a conservative
+one (systematic error), plus the intermediate estimate when the semivariogram range of the
+residuals is known. On the verification case the two bounds differ by a factor of **100** —
+which is how much the usual single-number practice understates. The formula was checked
+numerically to degenerate exactly into each bound at its limit.
+→ [ADR-002](decisions/ADR-002-uncertainty-travels-with-the-number.md) ·
+[ADR-008](decisions/ADR-008-two-uncertainty-bounds-not-one.md)
 
 **The pipeline refuses rather than guesses.**
-Before subtracting two terrain models it checks that they share resolution and coordinate
-system, and raises if they do not — instead of returning a plausible, wrong number. Map
-algebra over misaligned rasters is the classic silent failure in GIS, because nothing
-about the output looks incorrect.
-→ [ADR-003](decisions/ADR-003-refuse-rather-than-guess.md)
+Before subtracting two terrain models it checks resolution, grid shape, horizontal CRS and
+**vertical datum** — and raises rather than returning a plausible, wrong number. The
+vertical check catches the case nothing else does: an RTK receiver delivers ellipsoidal
+heights, a construction drawing is orthometric, and the difference is the geoid undulation
+— roughly 15 to 30 m in Argentina, applied to every cell, with no error message anywhere.
+→ [ADR-003](decisions/ADR-003-refuse-rather-than-guess.md) ·
+[ADR-009](decisions/ADR-009-verify-the-vertical-datum.md)
 
 **Quality control at every stage, not at the end.**
 Alignment is checked for fragmented reconstructions — the "islands" that mean insufficient
@@ -95,12 +101,15 @@ never mistaken for a measurement. Four gates, each cheap, each catching an error
 expensive downstream.
 → [ADR-005](decisions/ADR-005-quality-gates-at-every-stage.md)
 
-**The code and the text are one system.**
+**The code and the text are one system — and the coupling is verified.**
 Every script's docstring cites the chapter it implements, and several point at their
-sibling script for the case they do not handle — the constant-reference-plane volume
-script names the DTM-to-DTM one explicitly. The book is not documentation written after
-the fact; the two were built as a single artefact.
-→ [ADR-006](decisions/ADR-006-code-and-text-as-one-artefact.md)
+sibling script for the case they do not handle. That coupling used to be held by
+convention alone, so a renumbered chapter would break every citation silently. A checker
+now resolves each citation against the manuscript tree and fails a build if one does not
+land: 30 citations, all resolving. It was itself tested against deliberately broken
+references, because a verification tool never shown to fail proves nothing.
+→ [ADR-006](decisions/ADR-006-code-and-text-as-one-artefact.md) ·
+[ADR-010](decisions/ADR-010-verify-the-citations.md)
 
 **Compose the open stack; automate through the API.**
 PDAL for point clouds, GDAL and rasterio for rasters, OpenDroneMap for reconstruction —
@@ -118,6 +127,30 @@ processes the data, *and* signs the report — has to hold all of it, and no sin
 reference covered the chain end to end in Spanish.
 
 ---
+
+## Three gaps that were written down, then closed
+
+The "what it cost" section of each decision record names the weaknesses of that decision
+honestly. Three of those named real gaps, and all three have since been closed — records
+008, 009 and 010 are the trail of how.
+
+| Gap, as originally recorded | What it actually was | Closed by |
+|---|---|---|
+| "The propagation does not model spatially correlated error" | The single reported figure was the most optimistic one available — understating by up to 100× | Two bounds always reported, plus the intermediate estimate when the semivariogram range is known |
+| "Vertical datum mismatch is not caught" | Two rasters sharing horizontal CRS and resolution could be metres apart in height, silently | Horizontal and vertical components compared separately, with a strict mode for delivery |
+| "Nothing verifies that a cited section still exists" | The code-to-book coupling could rot without any test failing | A citation checker, tested against broken references, exit code usable in CI |
+
+Fixing them surfaced a fourth thing that had not been written down at all: the two-DTM
+volume script was including no-data cells in its sums, treating a `-9999` sentinel as an
+elevation. On the verification case that produced 12,513,750 m³ where the correct answer
+is 1,250 — an error of four orders of magnitude, from a raster that opened and rendered
+perfectly normally.
+
+That is the honest sequence, and it is why the gaps were worth writing down: **a
+limitation recorded in prose does not constrain anything, but it does stay findable.**
+ADR-002 shipped its simplification with the caveat attached and the number went out
+optimistic anyway. What changed the behaviour was putting the limitation in the output —
+two bounds, visibly far apart — where it cannot be skipped.
 
 ## Where the biology comes in
 

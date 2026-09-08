@@ -69,11 +69,68 @@ the volume, and the docstring instructs the user to pass **the RMSE actually mea
 that model**, never a default or a typical value. A propagated uncertainty computed from a
 made-up input is worse than none, because it looks rigorous.
 
+### Why two bounds and not one number
+
+The obvious propagation is `sigma = RMSE × a × sqrt(N)`, with `a` the cell area and `N` the
+cell count. That `sqrt(N)` encodes an assumption: that the vertical error is **independent
+from cell to cell**, so it cancels as it is summed.
+
+It does not. Doming, a mismeasured control point, a drift in the adjustment or a wrong
+vertical datum displace whole regions in the same direction. Correlated error accumulates
+rather than cancelling, and the difference is not marginal — on a 2,500 m² surface at 0.5 m
+resolution with 5 cm RMSE, the independent assumption gives ±1.25 m³ and the systematic one
+gives ±125 m³. **A factor of one hundred.**
+
+So both bounds are always reported:
+
+| Assumption | Formula | Reads as |
+|---|---|---|
+| Optimistic | `RMSE × a × √N` | errors independent, fully cancelling |
+| Conservative | `RMSE × A` | error systematic across the whole surface |
+
+When the correlation length `L` is known — the range of the semivariogram of the
+check-point residuals — the intermediate estimate is `RMSE × L × sqrt(A)`, which
+degenerates exactly into the optimistic bound at `L` = cell side and into the conservative
+one at `L` = the side of the surveyed area. That degeneration was verified numerically
+rather than assumed.
+
+Absent a correlation length, the conservative bound is what should be reported. Choosing
+the assumption is the operator's decision, not the script's.
+
 This is standard practice in any measurement science and rare in commercial survey
 deliverables, for a straightforward commercial reason: a bare number sounds more
 authoritative, and nobody asks. Until they do.
 
-See [ADR-002](decisions/ADR-002-uncertainty-travels-with-the-number.md).
+See [ADR-002](decisions/ADR-002-uncertainty-travels-with-the-number.md) and
+[ADR-008](decisions/ADR-008-two-uncertainty-bounds-not-one.md).
+
+## The vertical datum
+
+The error that passes every other check.
+
+Two terrain models can share a horizontal CRS and a resolution — satisfying every guard
+above — and be referenced to different vertical datums:
+
+- A **GNSS RTK receiver** delivers **ellipsoidal** heights by default. That is what it
+  measures.
+- A **construction drawing** or a national benchmark is in **orthometric** heights, above
+  the geoid.
+
+The difference is the geoid undulation, roughly **-30 to -15 m** across Argentina.
+Subtracting one from the other succeeds arithmetically, renders a normal-looking
+cut-and-fill map, and is wrong by tens of metres of thickness on every cell at once.
+
+So horizontal and vertical components are compared **separately**. Comparing whole CRS
+objects does detect a mismatch, but reports it as "the DTMs do not share a CRS" — which
+sends the operator to reproject in plan when the fault is in height. The separation is what
+makes the diagnosis match the problem.
+
+Most GeoTIFFs declare no vertical datum at all, and that case is treated as
+*indeterminate*, never as agreement — it is precisely where the error hides. It warns
+loudly by default and fails hard under a strict flag, because a check that blocks the
+majority case gets bypassed within a week.
+
+See [ADR-009](decisions/ADR-009-verify-the-vertical-datum.md).
 
 ## Silent failures in raster analysis
 

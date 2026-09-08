@@ -108,6 +108,12 @@ volume is delivered.
 data. The minimum check before any analysis, so a no-data sentinel is never averaged in as
 if it were an elevation.
 
+**Vertical datum.** Reports which vertical datum a raster declares, and whether two rasters
+are comparable in height at all. Ellipsoidal against orthometric heights differ by the
+geoid undulation — roughly 15 to 30 m in Argentina — and that mismatch passes every other
+guard silently. Undeclared is treated as indeterminate, never as agreement. See
+[ADR-009](decisions/ADR-009-verify-the-vertical-datum.md).
+
 **Accuracy.** Vertical RMSE against independent check points, sampling the raster at each
 check location and warning explicitly when a point falls outside the flight extent instead
 of silently dropping it.
